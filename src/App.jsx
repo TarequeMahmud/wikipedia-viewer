@@ -46,7 +46,11 @@ const App = () => {
         {result && result.length > 0 ? (
           <ul>
             {result.map((item) => (
-              <li>{item.title}</li>
+              <li key={item.pageid}>
+                <a>{item.title}</a>
+
+                <p dangerouslySetInnerHTML={{ __html: item.snippet }} />
+              </li>
             ))}
           </ul>
         ) : (
