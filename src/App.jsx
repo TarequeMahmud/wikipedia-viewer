@@ -4,6 +4,7 @@ import axios from "axios";
 const App = () => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
+  console.log(result);
 
   const searchWikipedia = async () => {
     if (!query) return;
@@ -13,17 +14,15 @@ const App = () => {
         params: {
           action: "query",
           format: "json",
-          prop: "extracts",
-          exintro: true,
-          explaintext: true,
-          titles: query,
+          list: "search",
+          srsearch: query, // Search term
+          srlimit: 10, // Limit to 10 results
           origin: "*", // Required for CORS
         },
       });
+      const searchResults = response.data.query.search;
 
-      const pages = response.data.query.pages;
-      const page = Object.values(pages)[0]; // Get the first page result
-      setResult(page.extract || "No results found.");
+      setResult(searchResults || "No results found.");
     } catch (error) {
       console.error("Error fetching data:", error);
       setResult("Error fetching data. Please try again.");
@@ -44,7 +43,15 @@ const App = () => {
         Search
       </button>
       <div style={{ marginTop: "20px" }}>
-        {result ? <p>{result}</p> : <p>Type a query and click "Search".</p>}
+        {result && result.length > 0 ? (
+          <ul>
+            {result.map((item) => (
+              <li>{item.title}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>Type a query and click "Search".</p>
+        )}
       </div>
     </div>
   );
